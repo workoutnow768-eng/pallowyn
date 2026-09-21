@@ -6,15 +6,20 @@ Difference from dark-fantasy: this account's newer Higgsfield API keys are
 issued as a single combined "HIGGSFIELD_API_KEY" secret already shaped as
 "<key_id>:<key_secret>" -- so the auth header just uses that value directly
 instead of assembling it from two separate env vars.
+
+FIX: per current docs.higgsfield.ai, both image and video endpoints live
+under api.higgsfield.ai (not platform.higgsfield.ai) -- the platform.*
+host used by the old dark-fantasy code returned HTTP 401 "Invalid
+credentials" for this newer key, confirmed via a live GitHub Actions run.
 """
 import os
 import time
 import requests
 import concurrent.futures
 
-IMAGE_BASE_URL = "https://platform.higgsfield.ai"
-GENERATE_IMAGE_ENDPOINT = f"{IMAGE_BASE_URL}/higgsfield-ai/soul/v2/standard"
-GENERATE_VIDEO_ENDPOINT = "https://api.higgsfield.ai/minimax/hailuo-2.3/standard/image-to-video"
+API_BASE_URL = "https://api.higgsfield.ai"
+GENERATE_IMAGE_ENDPOINT = f"{API_BASE_URL}/higgsfield-ai/soul/v2/standard"
+GENERATE_VIDEO_ENDPOINT = f"{API_BASE_URL}/minimax/hailuo-2.3/standard/image-to-video"
 
 POLL_INTERVAL_SECONDS = 5
 POLL_TIMEOUT_SECONDS = 300
