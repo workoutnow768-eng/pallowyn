@@ -16,6 +16,12 @@ Schema notes (per developers.buffer.com):
   - posts are created via `createPost(input: {...})`, with
     `mode: customScheduled` + `dueAt` for a specific scheduled time,
     and a `video` entry in `assets` for video posts.
+  - Instagram and YouTube channels reject a post with no platform
+    metadata: Instagram requires `metadata.instagram.type` (post,
+    story, or reel -- we use "reel" for short vertical video), and
+    YouTube requires `metadata.youtube.title` and `.categoryId`.
+    TikTok needs neither. Confirmed via GraphQL introspection against
+    CreatePostInput / PostInputMetaData on developers.buffer.com.
 """
 import os
 import requests
@@ -81,8 +87,19 @@ def find_channel_id(channel_name, token_env):
         f"Available: {[(c.get('name'), c.get('displayName')) for c in channels]}"
     )
 
-def create_video_post(channel_name, text, video_url, scheduled_at_iso8601, token_env):
-    channel_id, _service = find_channel_id(channel_name, token_env)
+def _platform_metadata(service, title, text):
+    """Build the per-platform `metadata` block Buffer requires for some
+    services. Instagram rejects posts with no `type`, YouTube rejects
+    posts with no `title`/`categoryId`. TikTok needs nothing extra."""
+    if service == "instagram":
+        return {"instagram": {"type": "reel", "shouldShareToFeed": True}}
+    if service == "youtube":
+        yt_title = (title or text or "Video").strip()[:100] or "Video"
+        return {"youtube": {"title": yt_title, "categoryId": "24", "privacy": "public"}}
+    return None
+
+def create_video_post(channel_name, text, video_url, scheduled_at_iso8601, token_env, title=None):
+    channel_id, service = find_channel_id(channel_name, token_env)
 
     mutation = """
     mutation CreatePost($input: CreatePostInput!) {
@@ -98,18 +115,21 @@ def create_video_post(channel_name, text, video_url, scheduled_at_iso8601, token
       }
     }
     """
-    variables = {
-        "input": {
-            "text": text,
-            "channelId": channel_id,
-            "schedulingType": "automatic",
-            "mode": "customScheduled",
-            "dueAt": scheduled_at_iso8601,
-            "assets": [
-                {"video": {"url": video_url}}
-            ],
-        }
+    post_input = {
+        "text": text,
+        "channelId": channel_id,
+        "schedulingType": "automatic",
+        "mode": "customScheduled",
+        "dueAt": scheduled_at_iso8601,
+        "assets": [
+            {"video": {"url": video_url}}
+        ],
     }
+    metadata = _platform_metadata(service, title, text)
+    if metadata:
+        post_input["metadata"] = metadata
+
+    variables = {"input": post_input}
     data = _post(mutation, variables, token_env)
     result = data["createPost"]
     if "message" in result:
