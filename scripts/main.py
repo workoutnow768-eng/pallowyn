@@ -24,7 +24,10 @@ STATE_PATH = os.path.join(os.path.dirname(__file__), "..", "state", "pallowyn_st
 OUTPUT_DIR = os.path.join(os.path.dirname(__file__), "..", "output", "pallowyn")
 MANIFEST_PATH = os.path.join(OUTPUT_DIR, "manifest.json")
 
-CHANNELS = ["pallowyn"]  # Buffer channel name(s) to post to -- update if IG/YouTube use different names
+# Buffer channels on this niche's account: "pallowyn" (TikTok), "durantale"
+# (Instagram), "Haloween" (YouTube) -- all three confirmed connected, just
+# named differently from each other since they were set up separately.
+CHANNELS = ["pallowyn", "durantale", "Haloween"]
 BUFFER_TOKEN_ENV = "BUFFER_API"
 MUSIC_TRACK_URL_ENV = "MUSIC_TRACK_URL"
 
@@ -37,16 +40,13 @@ CAPTION = ""  # silent-visual page, no captions, same as dark-fantasy
 SCHEDULE_MAX_RETRIES = 4
 SCHEDULE_RETRY_DELAY_SECONDS = 15
 
-
 def load_state():
     with open(STATE_PATH, "r") as f:
         return json.load(f)
 
-
 def save_state(state):
     with open(STATE_PATH, "w") as f:
         json.dump(state, f, indent=2)
-
 
 def download_music_track(out_path):
     import requests
@@ -57,7 +57,6 @@ def download_music_track(out_path):
     with open(out_path, "wb") as f:
         f.write(resp.content)
     return out_path
-
 
 def cmd_generate():
     state = load_state()
@@ -126,7 +125,6 @@ def cmd_generate():
     if not manifest:
         raise SystemExit("[SAFETY] No posts were successfully generated -- aborting before schedule step.")
 
-
 def _schedule_with_retry(channel, text, video_url, scheduled_at, token_env):
     last_err = None
     for attempt in range(SCHEDULE_MAX_RETRIES):
@@ -146,7 +144,6 @@ def _schedule_with_retry(channel, text, video_url, scheduled_at, token_env):
                       f"may not have caught up to the push yet)")
                 time.sleep(SCHEDULE_RETRY_DELAY_SECONDS)
     raise last_err
-
 
 def cmd_schedule():
     if not os.path.exists(MANIFEST_PATH):
@@ -178,7 +175,6 @@ def cmd_schedule():
                 print(f"[ERROR] Failed to schedule '{entry['title']}' to {channel}: {e}")
 
     os.remove(MANIFEST_PATH)
-
 
 if __name__ == "__main__":
     if len(sys.argv) < 2 or sys.argv[1] not in ("generate", "schedule"):
