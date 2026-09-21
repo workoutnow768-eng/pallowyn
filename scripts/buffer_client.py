@@ -9,7 +9,10 @@ the token is even checked.
 
 Schema notes (per developers.buffer.com):
   - organizations live under `account { organizations { id } }`
-  - channels are fetched via `channels(input: { organizationId })`
+  - channels are fetched via `channels(input: { organizationId })`,
+    where organizationId is Buffer's custom `OrganizationId` scalar,
+    not a plain String (a plain String! variable is rejected with
+    GRAPHQL_VALIDATION_FAILED).
   - posts are created via `createPost(input: {...})`, with
     `mode: customScheduled` + `dueAt` for a specific scheduled time,
     and a `video` entry in `assets` for video posts.
@@ -19,11 +22,9 @@ import requests
 
 BUFFER_GRAPHQL_URL = "https://api.buffer.com"
 
-
 def _headers(token_env):
     token = os.environ[token_env]
     return {"Authorization": f"Bearer {token}", "Content-Type": "application/json"}
-
 
 def _post(query, variables, token_env):
     resp = requests.post(
@@ -37,7 +38,6 @@ def _post(query, variables, token_env):
     if "errors" in data:
         raise RuntimeError(f"Buffer GraphQL error: {data['errors']}")
     return data["data"]
-
 
 def get_organization_id(token_env):
     query = """
@@ -55,11 +55,10 @@ def get_organization_id(token_env):
         raise ValueError("No organizations found on this Buffer account.")
     return orgs[0]["id"]
 
-
 def get_channels(token_env):
     organization_id = get_organization_id(token_env)
     query = """
-    query GetChannels($organizationId: String!) {
+    query GetChannels($organizationId: OrganizationId!) {
       channels(input: { organizationId: $organizationId }) {
         id
         name
@@ -71,7 +70,6 @@ def get_channels(token_env):
     data = _post(query, {"organizationId": organization_id}, token_env)
     return data["channels"]
 
-
 def find_channel_id(channel_name, token_env):
     channels = get_channels(token_env)
     for ch in channels:
@@ -82,7 +80,6 @@ def find_channel_id(channel_name, token_env):
         f"No Buffer channel found named '{channel_name}'. "
         f"Available: {[(c.get('name'), c.get('displayName')) for c in channels]}"
     )
-
 
 def create_video_post(channel_name, text, video_url, scheduled_at_iso8601, token_env):
     channel_id, _service = find_channel_id(channel_name, token_env)
