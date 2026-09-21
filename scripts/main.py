@@ -10,6 +10,7 @@ Run via GitHub Actions (.github/workflows/daily-post.yml).
 import os
 import sys
 import json
+import time
 import datetime
 
 sys.path.insert(0, os.path.dirname(__file__))
@@ -23,12 +24,18 @@ STATE_PATH = os.path.join(os.path.dirname(__file__), "..", "state", "pallowyn_st
 OUTPUT_DIR = os.path.join(os.path.dirname(__file__), "..", "output", "pallowyn")
 MANIFEST_PATH = os.path.join(OUTPUT_DIR, "manifest.json")
 
-CHANNELS = ["pallowyn"]
+CHANNELS = ["pallowyn"]  # Buffer channel name(s) to post to -- update if IG/YouTube use different names
 BUFFER_TOKEN_ENV = "BUFFER_API"
 MUSIC_TRACK_URL_ENV = "MUSIC_TRACK_URL"
 
 HASHTAGS = "#halloween #spookyseason #jackolantern #autumnvibes #aiart"
-CAPTION = ""
+CAPTION = ""  # silent-visual page, no captions, same as dark-fantasy
+
+# raw.githubusercontent.com can lag a few seconds behind a push, so a
+# freshly-committed video URL can 404 if Buffer fetches it immediately.
+# Retry with backoff instead of failing the whole run over a transient miss.
+SCHEDULE_MAX_RETRIES = 4
+SCHEDULE_RETRY_DELAY_SECONDS = 15
 
 
 def load_state():
@@ -85,6 +92,7 @@ def cmd_generate():
     offset = mux_audio.next_offset(state, track_duration)
 
     manifest = []
+    daily_slots = state.get("daily_time_slots_uk", ["09:00", "15:00", "19:00"])
     scheduled_up_to = datetime.datetime.fromisoformat(state["scheduled_up_to"].replace("Z", "+00:00"))
 
     for i, result in enumerate(results):
@@ -119,6 +127,27 @@ def cmd_generate():
         raise SystemExit("[SAFETY] No posts were successfully generated -- aborting before schedule step.")
 
 
+def _schedule_with_retry(channel, text, video_url, scheduled_at, token_env):
+    last_err = None
+    for attempt in range(SCHEDULE_MAX_RETRIES):
+        try:
+            return buffer_client.create_video_post(
+                channel_name=channel,
+                text=text,
+                video_url=video_url,
+                scheduled_at_iso8601=scheduled_at,
+                token_env=token_env,
+            )
+        except Exception as e:
+            last_err = e
+            if attempt < SCHEDULE_MAX_RETRIES - 1:
+                print(f"[WARN] Buffer schedule attempt {attempt + 1} failed ({e}); "
+                      f"retrying in {SCHEDULE_RETRY_DELAY_SECONDS}s (raw.githubusercontent.com "
+                      f"may not have caught up to the push yet)")
+                time.sleep(SCHEDULE_RETRY_DELAY_SECONDS)
+    raise last_err
+
+
 def cmd_schedule():
     if not os.path.exists(MANIFEST_PATH):
         print("[OK] No manifest found -- nothing to schedule (generate step may have failed).")
@@ -137,11 +166,11 @@ def cmd_schedule():
 
         for channel in CHANNELS:
             try:
-                post_id = buffer_client.create_video_post(
-                    channel_name=channel,
+                post_id = _schedule_with_retry(
+                    channel=channel,
                     text=f"{CAPTION} {HASHTAGS}".strip(),
                     video_url=video_url,
-                    scheduled_at_iso8601=entry["scheduled_at"],
+                    scheduled_at=entry["scheduled_at"],
                     token_env=BUFFER_TOKEN_ENV,
                 )
                 print(f"[OK] Scheduled '{entry['title']}' to {channel} at {entry['scheduled_at']} (post id {post_id})")
