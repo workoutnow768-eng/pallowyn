@@ -2,7 +2,7 @@
   "_comment": "Bot-maintained rotation state for the pallowyn video pipeline. Do not hand-edit last_scene_index/scheduled_up_to/music_offset_seconds while the bot is running on schedule -- it owns these fields.",
   "last_scene_index": 9,
   "scheduled_up_to": "2026-09-24T15:00:00Z",
-  "music_offset_seconds": 54.0,
+  "music_offset_seconds": 0.0,
   "last_run_at": "2026-09-21T21:55:58.585356Z",
   "last_run_slot": "github_actions_autonomous_bot",
   "posts_per_day": 3,
@@ -11,5 +11,5 @@
     "15:00",
     "19:00"
   ],
-  "notes": "End-to-end run confirmed working (image -> video -> mux -> commit -> Buffer schedule landed in Buffer's queue). posts_per_day bumped from 1 to 3 for full production cadence."
+  "notes": "Music track swapped to 'Spooky Music' by BFCMUSIC on Pixabay (was too fast). music_offset_seconds reset to 0.0 since the old offset was measured against the old track."
 }
