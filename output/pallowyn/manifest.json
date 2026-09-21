@@ -1,0 +1,20 @@
+[
+  {
+    "scene_index": 6,
+    "title": "candlelit graveyard gate",
+    "final_path": "/home/runner/work/pallowyn/pallowyn/scripts/../output/pallowyn/post_0/final.mp4",
+    "scheduled_at": "2026-09-24T03:00:00Z"
+  },
+  {
+    "scene_index": 7,
+    "title": "children carving pumpkins",
+    "final_path": "/home/runner/work/pallowyn/pallowyn/scripts/../output/pallowyn/post_1/final.mp4",
+    "scheduled_at": "2026-09-24T09:00:00Z"
+  },
+  {
+    "scene_index": 8,
+    "title": "owl on a twisted branch",
+    "final_path": "/home/runner/work/pallowyn/pallowyn/scripts/../output/pallowyn/post_2/final.mp4",
+    "scheduled_at": "2026-09-24T15:00:00Z"
+  }
+]
