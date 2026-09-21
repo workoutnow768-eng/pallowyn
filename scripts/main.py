@@ -125,7 +125,7 @@ def cmd_generate():
     if not manifest:
         raise SystemExit("[SAFETY] No posts were successfully generated -- aborting before schedule step.")
 
-def _schedule_with_retry(channel, text, video_url, scheduled_at, token_env):
+def _schedule_with_retry(channel, text, video_url, scheduled_at, token_env, title=None):
     last_err = None
     for attempt in range(SCHEDULE_MAX_RETRIES):
         try:
@@ -135,6 +135,7 @@ def _schedule_with_retry(channel, text, video_url, scheduled_at, token_env):
                 video_url=video_url,
                 scheduled_at_iso8601=scheduled_at,
                 token_env=token_env,
+                title=title,
             )
         except Exception as e:
             last_err = e
@@ -169,6 +170,7 @@ def cmd_schedule():
                     video_url=video_url,
                     scheduled_at=entry["scheduled_at"],
                     token_env=BUFFER_TOKEN_ENV,
+                    title=entry["title"],
                 )
                 print(f"[OK] Scheduled '{entry['title']}' to {channel} at {entry['scheduled_at']} (post id {post_id})")
             except Exception as e:
