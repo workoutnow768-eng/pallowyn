@@ -1,0 +1,11 @@
+{
+  "_comment": "Bot-maintained rotation state for the pallowyn video pipeline. Do not hand-edit last_scene_index/scheduled_up_to/music_offset_seconds while the bot is running on schedule -- it owns these fields.",
+  "last_scene_index": 0,
+  "scheduled_up_to": "2026-09-22T09:00:00Z",
+  "music_offset_seconds": 0.0,
+  "last_run_at": null,
+  "last_run_slot": null,
+  "posts_per_day": 1,
+  "daily_time_slots_uk": ["09:00", "15:00", "19:00"],
+  "notes": "Initial state for pallowyn -- posts_per_day set to 1 for the first test run, same as dark-fantasy's testing process. Bump to 3 once a run succeeds end-to-end."
+}
