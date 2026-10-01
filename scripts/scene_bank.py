@@ -1,12 +1,25 @@
 """
 Scene bank for the pallowyn (Halloween/Spooky Seasonal) video pipeline.
 Follows PALLOWYN_VIDEO_STYLE.md exactly -- cozy-spooky/whimsical, NOT
-horror. 12 scenes, alternating has_people true/false 6/6 (same pattern
-as dark-fantasy's scene_bank.py).
+horror. Uses Higgsfield Soul v2 for the still + Minimax Hailuo 2.3
+image-to-video for the animate step, same as creepvale/dark-fantasy.
 
-Rewritten with specific, named props and small narrative details in each
-scene (not just generic "pumpkins and cobwebs") so every image reads as
-a distinct, thought-out moment instead of an interchangeable template.
+Third revision (2026-10-01), two changes based on direct feedback that
+the videos "look like a still image with a tiny bit of flame movement"
+and that posts "keep almost repeating themselves":
+
+  1. Hailuo 2.3 has NO structural camera_fixed parameter -- camera
+     behavior is driven entirely by animate_prompt wording. Every scene
+     previously said "camera completely locked... no camera movement
+     whatsoever", which directly told the model to barely move. That
+     phrasing is gone -- every animate_prompt below now asks for a real,
+     deliberate camera move (push-in, pull-back, pan, tilt, orbit, or
+     dolly), varied scene to scene.
+  2. Bank grew from 12 to 16 scenes to stretch the rotation cycle at 3
+     posts/day from 4 days to a bit over 5, and the 4 new scenes add
+     settings (a candy shop window, a hayride wagon, a front-porch
+     greeter, a corn maze entrance) distinct from the existing
+     porch/patch/graveyard set for more variety within the cycle.
 """
 
 SCENES = [
@@ -24,11 +37,11 @@ SCENES = [
             "purple-blue autumn night sky, drifting mist, whimsical "
             "dark-fantasy illustration style, wide cinematic composition, "
             "9:16 vertical, highly detailed, no text, no watermark",
-        "animate_prompt": "Camera completely locked and static, only the "
-            "candle flicker inside each jack-o'-lantern moves gently and "
-            "the bat-shaped string lights blink faintly, cozy spooky "
-            "Halloween atmosphere, subtle ambient motion only, no camera "
-            "movement, no zoom, no pan",
+        "animate_prompt": "Bring this image to life with a slow pan right "
+            "along the row of jack-o'-lanterns, one face passing into "
+            "view after another. Candle flicker moves inside each one, "
+            "the bat-shaped string lights blink. Cozy spooky Halloween "
+            "atmosphere, no text",
     },
     {
         "title": "lone witch silhouette",
@@ -42,11 +55,11 @@ SCENES = [
             "purple-blue autumn night sky, drifting mist, whimsical "
             "dark-fantasy illustration style, wide cinematic composition, "
             "9:16 vertical, highly detailed, no text, no watermark",
-        "animate_prompt": "Camera completely locked and static, only the "
-            "witch's cloak sways gently, her pumpkin lantern swings faintly, "
-            "and mist drifts slowly across the patch, cozy spooky Halloween "
-            "atmosphere, subtle ambient motion only, no camera movement, no "
-            "zoom, no pan",
+        "animate_prompt": "Bring this image to life with a slow push-in "
+            "toward the witch and her cat, the pumpkin patch spreading "
+            "wider at the edges of frame as the camera closes in. Her "
+            "cloak sways, her pumpkin lantern swings, mist drifts. Cozy "
+            "spooky Halloween atmosphere, no text",
     },
     {
         "title": "haunted house on the hill",
@@ -61,11 +74,11 @@ SCENES = [
             "drifting mist, whimsical dark-fantasy illustration style, "
             "wide cinematic composition, 9:16 vertical, highly detailed, "
             "no text, no watermark",
-        "animate_prompt": "Camera completely locked and static, only the "
-            "window light flickers softly, the tire swing sways slightly "
-            "in the breeze, and mist drifts across the hill, cozy spooky "
-            "Halloween atmosphere, subtle ambient motion only, no camera "
-            "movement, no zoom, no pan",
+        "animate_prompt": "Bring this image to life with a slow rising "
+            "camera movement, craning up from the line of jack-o'-"
+            "lanterns on the path to the glowing attic window. Window "
+            "light flickers, the tire swing sways, mist drifts across the "
+            "hill. Cozy spooky Halloween atmosphere, no text",
     },
     {
         "title": "trick-or-treaters on the lane",
@@ -80,11 +93,10 @@ SCENES = [
             "autumn sky, drifting mist, whimsical dark-fantasy "
             "illustration style, wide cinematic composition, 9:16 "
             "vertical, highly detailed, no text, no watermark",
-        "animate_prompt": "Camera completely locked and static, only "
-            "fallen leaves drift gently across the lane and the paper bat "
-            "decorations flutter slightly, cozy spooky Halloween "
-            "atmosphere, subtle ambient motion only, no camera movement, "
-            "no zoom, no pan",
+        "animate_prompt": "Bring this image to life with a slow pan left, "
+            "following the uneven line of trick-or-treaters down the "
+            "lane. Fallen leaves drift across the lane, the paper bats "
+            "flutter. Cozy spooky Halloween atmosphere, no text",
     },
     {
         "title": "black cat on a fence",
@@ -99,10 +111,10 @@ SCENES = [
             "whimsical dark-fantasy illustration style, wide cinematic "
             "composition, 9:16 vertical, highly detailed, no text, no "
             "watermark",
-        "animate_prompt": "Camera completely locked and static, only the "
-            "cat's tail flicks slowly, its ear twitches once, and mist "
-            "drifts behind it, cozy spooky Halloween atmosphere, subtle "
-            "ambient motion only, no camera movement, no zoom, no pan",
+        "animate_prompt": "Bring this image to life with a slow pull-back, "
+            "widening from the cat to reveal the full moon rising behind "
+            "it. The cat's tail flicks, its ear twitches once, mist "
+            "drifts. Cozy spooky Halloween atmosphere, no text",
     },
     {
         "title": "pumpkin patch at dusk",
@@ -117,11 +129,10 @@ SCENES = [
             "foreground, whimsical dark-fantasy illustration style, wide "
             "cinematic composition, 9:16 vertical, highly detailed, no "
             "text, no watermark",
-        "animate_prompt": "Camera completely locked and static, only the "
-            "scarecrow's straw sleeves and the nearby vines sway gently in "
-            "the breeze and the crow shifts its wings once, cozy spooky "
-            "Halloween atmosphere, subtle ambient motion only, no camera "
-            "movement, no zoom, no pan",
+        "animate_prompt": "Bring this image to life with a slow dolly "
+            "forward through the pumpkin patch toward the scarecrow. Its "
+            "straw sleeves and the nearby vines sway, the crow shifts its "
+            "wings once. Cozy spooky Halloween atmosphere, no text",
     },
     {
         "title": "candlelit graveyard gate",
@@ -136,11 +147,11 @@ SCENES = [
             "drifting mist, whimsical dark-fantasy illustration style, "
             "wide cinematic composition, 9:16 vertical, highly detailed, "
             "no text, no watermark",
-        "animate_prompt": "Camera completely locked and static, only the "
-            "candle lanterns flicker, the paper skeleton sways slightly, "
-            "and mist drifts between the tombstones, cozy spooky Halloween "
-            "atmosphere, subtle ambient motion only, no camera movement, "
-            "no zoom, no pan",
+        "animate_prompt": "Bring this image to life with a slow push-in "
+            "through the gate toward the 'MR. WHISKERS' tombstone. Candle "
+            "lanterns flicker, the paper skeleton sways, mist drifts "
+            "between the tombstones. Cozy spooky Halloween atmosphere, "
+            "no text",
     },
     {
         "title": "children carving pumpkins",
@@ -155,11 +166,11 @@ SCENES = [
             "purple-blue autumn night sky, whimsical dark-fantasy "
             "illustration style, wide cinematic composition, 9:16 "
             "vertical, highly detailed, no text, no watermark",
-        "animate_prompt": "Camera completely locked and static, only the "
-            "string lights and candle flames flicker gently and steam "
-            "rises faintly from a nearby mug of cider, cozy spooky "
-            "Halloween atmosphere, subtle ambient motion only, no camera "
-            "movement, no zoom, no pan",
+        "animate_prompt": "Bring this image to life with a slow tilt down "
+            "from the string lights overhead to the table of carving "
+            "pumpkins. String lights and candle flames flicker, steam "
+            "rises from a nearby mug of cider. Cozy spooky Halloween "
+            "atmosphere, no text",
     },
     {
         "title": "owl on a twisted branch",
@@ -173,11 +184,10 @@ SCENES = [
             "whimsical dark-fantasy illustration style, wide cinematic "
             "composition, 9:16 vertical, highly detailed, no text, no "
             "watermark",
-        "animate_prompt": "Camera completely locked and static, only the "
-            "owl's feathers ruffle slightly, the distant bats continue "
-            "their line across the moon, and fog drifts below, cozy "
-            "spooky Halloween atmosphere, subtle ambient motion only, no "
-            "camera movement, no zoom, no pan",
+        "animate_prompt": "Bring this image to life with a slow orbital "
+            "drift to the right around the owl's branch. Its feathers "
+            "ruffle, the bats continue their line across the moon, fog "
+            "drifts below. Cozy spooky Halloween atmosphere, no text",
     },
     {
         "title": "costumed figure at the door",
@@ -191,11 +201,10 @@ SCENES = [
             "deep purple-blue autumn night sky behind, whimsical "
             "dark-fantasy illustration style, wide cinematic composition, "
             "9:16 vertical, highly detailed, no text, no watermark",
-        "animate_prompt": "Camera completely locked and static, only the "
-            "ghost's sheet billows gently, the porch light flickers, and "
-            "the ribbon wreath sways faintly, cozy spooky Halloween "
-            "atmosphere, subtle ambient motion only, no camera movement, "
-            "no zoom, no pan",
+        "animate_prompt": "Bring this image to life with a slow push-in "
+            "on the ghost figure at the door. The sheet billows, the "
+            "porch light flickers, the ribbon wreath sways. Cozy spooky "
+            "Halloween atmosphere, no text",
     },
     {
         "title": "cobweb covered barn",
@@ -209,10 +218,10 @@ SCENES = [
             "purple-blue autumn night sky, drifting mist, whimsical "
             "dark-fantasy illustration style, wide cinematic composition, "
             "9:16 vertical, highly detailed, no text, no watermark",
-        "animate_prompt": "Camera completely locked and static, only the "
-            "lantern flickers and cobwebs sway faintly in the breeze, cozy "
-            "spooky Halloween atmosphere, subtle ambient motion only, no "
-            "camera movement, no zoom, no pan",
+        "animate_prompt": "Bring this image to life with a slow pan left "
+            "across the barn's front, from the wheelbarrow of pumpkins to "
+            "the glowing loft window. The lantern flickers, cobwebs sway. "
+            "Cozy spooky Halloween atmosphere, no text",
     },
     {
         "title": "bonfire gathering",
@@ -227,10 +236,87 @@ SCENES = [
             "purple-blue autumn sky, whimsical dark-fantasy illustration "
             "style, wide cinematic composition, 9:16 vertical, highly "
             "detailed, no text, no watermark",
-        "animate_prompt": "Camera completely locked and static, only the "
-            "bonfire flames flicker, sparks drift upward, and the "
-            "marshmallow on the stick glows faintly, cozy spooky Halloween "
-            "atmosphere, subtle ambient motion only, no camera movement, "
-            "no zoom, no pan",
+        "animate_prompt": "Bring this image to life with a slow pull-back "
+            "from the bonfire, widening to reveal the full circle of "
+            "figures. Flames flicker, sparks drift upward, the "
+            "marshmallow glows faintly. Cozy spooky Halloween atmosphere, "
+            "no text",
+    },
+    {
+        "title": "candy shop window",
+        "has_people": False,
+        "still_prompt": "A cozy small-town candy shop window at night, "
+            "displays packed with jars of candy corn, chocolate "
+            "skeletons, and caramel apples wrapped in orange cellophane, "
+            "a hand-painted 'TRICK OR TREAT' banner strung across the top "
+            "of the glass, a cardboard black cat cutout taped crookedly "
+            "inside, warm golden light spilling out onto the sidewalk, "
+            "a small pile of fallen leaves swept against the shop's "
+            "doorstep, deep purple-blue autumn night sky reflected faintly "
+            "in the glass, whimsical dark-fantasy illustration style, wide "
+            "cinematic composition, 9:16 vertical, highly detailed, no "
+            "text, no watermark",
+        "animate_prompt": "Bring this image to life with a slow push-in "
+            "through the shop window toward the jars of candy. The "
+            "banner stirs faintly, the warm light flickers gently, "
+            "reflections shift in the glass. Cozy spooky Halloween "
+            "atmosphere, no text",
+    },
+    {
+        "title": "hayride wagon",
+        "has_people": True,
+        "still_prompt": "A wooden hayride wagon piled high with loose hay "
+            "and pulled by a sturdy silhouetted draft horse, small "
+            "costumed passengers sitting along the wagon's edges with "
+            "legs dangling, a string of pumpkin-shaped lanterns strung "
+            "along the wagon's rails, rolling farmland and a distant "
+            "corn maze visible under a deep purple-blue autumn sky, a "
+            "trail of loose hay wisps drifting off the back of the wagon, "
+            "whimsical dark-fantasy illustration style, wide cinematic "
+            "composition, 9:16 vertical, highly detailed, no text, no "
+            "watermark",
+        "animate_prompt": "Bring this image to life with a slow pan "
+            "right, following the wagon as it moves across the farmland. "
+            "The pumpkin lanterns swing gently, loose hay wisps drift off "
+            "the back, the horse's mane shifts. Cozy spooky Halloween "
+            "atmosphere, no text",
+    },
+    {
+        "title": "front-porch greeter",
+        "has_people": True,
+        "still_prompt": "A life-sized animatronic-style skeleton dressed "
+            "in a tophat and bowtie, propped jauntily in a rocking chair "
+            "on a decorated front porch, one bony hand raised mid-wave, "
+            "a bowl of candy balanced on its lap, jack-o'-lanterns lining "
+            "the porch steps below, orange string lights looping along "
+            "the railing, a small 'HAPPY HALLOWEEN' bunting sagging "
+            "slightly in the middle, deep purple-blue autumn night sky "
+            "behind, whimsical dark-fantasy illustration style, wide "
+            "cinematic composition, 9:16 vertical, highly detailed, no "
+            "text, no watermark",
+        "animate_prompt": "Bring this image to life with a slow tilt up "
+            "from the jack-o'-lanterns on the steps to the skeleton in "
+            "the rocking chair. The chair rocks almost imperceptibly, the "
+            "string lights blink, the bunting sways. Cozy spooky "
+            "Halloween atmosphere, no text",
+    },
+    {
+        "title": "corn maze entrance",
+        "has_people": False,
+        "still_prompt": "The entrance to a tall corn maze at dusk, a "
+            "rustic wooden archway with a hand-painted sign reading "
+            "'MAZE' hanging slightly crooked, two carved pumpkins "
+            "flanking the entrance path, rows of dried cornstalks "
+            "towering on either side disappearing into deep shadow, a "
+            "scarecrow positioned just inside the entrance keeping watch, "
+            "warm string lights looped along the archway, deep "
+            "purple-blue autumn sky fading behind the stalks, whimsical "
+            "dark-fantasy illustration style, wide cinematic composition, "
+            "9:16 vertical, highly detailed, no text, no watermark",
+        "animate_prompt": "Bring this image to life with a slow dolly "
+            "forward through the archway into the maze entrance. The "
+            "cornstalks rustle faintly, the string lights flicker, the "
+            "scarecrow's sleeve stirs. Cozy spooky Halloween atmosphere, "
+            "no text",
     },
 ]
