@@ -1,9 +1,9 @@
 {
   "_comment": "Bot-maintained rotation state for the pallowyn video pipeline. Do not hand-edit last_scene_index/scheduled_up_to/music_offset_seconds while the bot is running on schedule -- it owns these fields.",
-  "last_scene_index": 14,
-  "scheduled_up_to": "2026-10-20T09:00:00Z",
-  "music_offset_seconds": 18.0,
-  "last_run_at": "2026-10-26T21:43:20.552716Z",
+  "last_scene_index": 1,
+  "scheduled_up_to": "2026-10-21T03:00:00Z",
+  "music_offset_seconds": 36.0,
+  "last_run_at": "2026-10-27T21:27:54.902082Z",
   "last_run_slot": "github_actions_autonomous_bot",
   "posts_per_day": 3,
   "daily_time_slots_uk": [
